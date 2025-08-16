@@ -6,8 +6,8 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import io.com.leluxe_cosmeticos_backend.LeluxeCosmeticosApi.common.exceptions.RegistroNaoEncontradoException;
 import io.com.leluxe_cosmeticos_backend.LeluxeCosmeticosApi.common.mapper.enderecos.EnderecoMapper;
+import io.com.leluxe_cosmeticos_backend.LeluxeCosmeticosApi.common.validators.enderecos.EnderecoValidator;
 import io.com.leluxe_cosmeticos_backend.LeluxeCosmeticosApi.models.dto.enderecos.EnderecoCreateDTO;
 import io.com.leluxe_cosmeticos_backend.LeluxeCosmeticosApi.models.dto.enderecos.EnderecoDTO;
 import io.com.leluxe_cosmeticos_backend.LeluxeCosmeticosApi.models.dto.enderecos.EnderecoUpdateDTO;
@@ -25,6 +25,7 @@ public class EnderecoService {
     private final EnderecoRepository enderecoRepository;
     private final UsuarioRepository usuarioRepository;
     private final EnderecoMapper enderecoMapper;
+    private final EnderecoValidator enderecoValidator;
 
     public List<EnderecoDTO> findAll() {
         return enderecoMapper.toDTOList(enderecoRepository.findAll());
@@ -39,8 +40,9 @@ public class EnderecoService {
     }
 
     public EnderecoDTO create(EnderecoCreateDTO dto) {
-        Usuario usuario = findUsuarioOrThrow(dto.getIdUsuario());
+        enderecoValidator.validateCreate(dto);
 
+        Usuario usuario = findUsuarioOrThrow(dto.getIdUsuario());
         Endereco endereco = enderecoMapper.toEntity(dto);
         endereco.setUsuario(usuario);
 
@@ -54,6 +56,8 @@ public class EnderecoService {
     }
 
     public Optional<EnderecoDTO> update(Long id, EnderecoUpdateDTO dto) {
+        enderecoValidator.validateUpdate(id, dto);
+
         return enderecoRepository.findById(id)
                 .map(endereco -> {
                     if (Boolean.TRUE.equals(dto.getIsPrincipal())) {
@@ -65,13 +69,13 @@ public class EnderecoService {
     }
 
     public void delete(Long id) {
-        if (!enderecoRepository.existsById(id)) {
-            throw new RegistroNaoEncontradoException("Endereço", "ID", id.toString());
-        }
+        enderecoValidator.validateDelete(id);
         enderecoRepository.deleteById(id);
     }
 
     public Optional<EnderecoDTO> setPrincipal(Long id) {
+        enderecoValidator.validateSetPrincipal(id);
+
         return enderecoRepository.findById(id)
                 .map(endereco -> {
                     unsetOtherPrincipals(endereco.getUsuario().getIdUsuario());
@@ -82,7 +86,7 @@ public class EnderecoService {
 
     private Usuario findUsuarioOrThrow(Long usuarioId) {
         return usuarioRepository.findById(usuarioId)
-                .orElseThrow(() -> new RegistroNaoEncontradoException("Usuário", "ID", usuarioId.toString()));
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
     }
 
     private void unsetOtherPrincipals(Long usuarioId) {
