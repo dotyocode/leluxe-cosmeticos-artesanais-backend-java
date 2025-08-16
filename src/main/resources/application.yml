@@ -1,0 +1,44 @@
+spring:
+  application:
+    name: ${APP_NAME:leluxe-cosmeticos-backend}
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/leluxe-cosmeticos}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:123456}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      "[hibernate.format_sql]": true
+
+server:
+  port: ${SERVER_PORT:8080}
+
+app:
+  security:
+    default-password: ${DEFAULT_PASSWORD:123456}
+    jwt-secret: ${JWT_SECRET:mySecretKey123456789}
+
+#niveis de log
+#trace - mais detalhado (nao recomendado para producao)
+#debug - detalhado (nao recomendado para producao)
+#info - informativo (recomendado para producao)
+#warn - aviso (recomendado para producao)
+#error - erro (recomendado para producao)
+#fatal - fatal (recomendado para producao)
+
+logging:
+  file:
+    name: app.log
+  level:
+    root: warn
+    io:
+      github:
+        dotyocode:
+          libraryApi: trace
+    org:
+      springframework:
+        web: debug
+        security: trace
