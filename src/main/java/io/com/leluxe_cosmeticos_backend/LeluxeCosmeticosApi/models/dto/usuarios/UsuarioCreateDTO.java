@@ -1,8 +1,16 @@
 package io.com.leluxe_cosmeticos_backend.LeluxeCosmeticosApi.models.dto.usuarios;
 
+import java.util.Date;
+
+import org.hibernate.validator.constraints.br.CPF;
+
+import io.com.leluxe_cosmeticos_backend.LeluxeCosmeticosApi.common.annotations.ValidSenha;
+import io.com.leluxe_cosmeticos_backend.LeluxeCosmeticosApi.common.annotations.ValidTelefone;
+import io.com.leluxe_cosmeticos_backend.LeluxeCosmeticosApi.common.enums.roles.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,32 +21,38 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UsuarioCreateDTO {
 
-    @NotBlank(message = "Nome é obrigatório")
+    @NotNull(message = "Nome é obrigatório")
+    @NotBlank(message = "Nome não pode estar vazio")
     @Size(max = 250, message = "Nome deve ter no máximo 250 caracteres")
     private String nome;
 
-    @Size(max = 50, message = "Nascimento deve ter no máximo 50 caracteres")
-    private String nascimento;
+    @NotNull(message = "Nascimento é obrigatório")
+    @Past(message = "Data de nascimento não pode ser futura")
+    private Date nascimento;
 
-    @NotBlank(message = "Email é obrigatório")
+    @NotNull(message = "Email é obrigatório")
+    @NotBlank(message = "Email não pode estar vazio")
     @Email(message = "Email deve ser válido")
     @Size(max = 50, message = "Email deve ter no máximo 50 caracteres")
     private String email;
 
-    @NotBlank(message = "Senha é obrigatória")
-    @Size(max = 250, message = "Senha deve ter no máximo 250 caracteres")
+    @ValidSenha
     private String password;
 
-    @Size(max = 50, message = "CPF deve ter no máximo 50 caracteres")
+    @NotNull(message = "CPF é obrigatório")
+    @NotBlank(message = "CPF não pode estar vazio")
+    @CPF(message = "CPF deve ser válido")
+    @Size(max = 11, message = "CPF deve ter no máximo 11 caracteres")
     private String cpf;
 
-    @Size(max = 250, message = "Telefone deve ter no máximo 250 caracteres")
+    @ValidTelefone
     private String telefone;
 
-    @NotBlank(message = "Destinatário é obrigatório")
+    @NotNull(message = "Destinatário é obrigatório")
+    @NotBlank(message = "Destinatário não pode estar vazio")
     @Size(max = 250, message = "Destinatário deve ter no máximo 250 caracteres")
     private String destinatario;
 
-    @NotNull(message = "Role é obrigatório")
-    private Integer role;
+    @NotNull(message = "Role é obrigatória")
+    private Role role;
 }
