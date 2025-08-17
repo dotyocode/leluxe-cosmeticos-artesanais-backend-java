@@ -39,9 +39,8 @@ public class UsuarioController {
 
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioDTO> findById(@PathVariable Long id) {
-        return usuarioService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        UsuarioDTO usuario = usuarioService.findByIdOrThrow(id);
+        return ResponseEntity.ok(usuario);
     }
 
     @PostMapping

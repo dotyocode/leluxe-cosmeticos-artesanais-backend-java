@@ -2,7 +2,6 @@ package io.com.leluxe_cosmeticos_backend.LeluxeCosmeticosApi.common.validators.u
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Component;
 
@@ -22,10 +21,6 @@ public class UsuarioValidator {
     private final UsuarioRepository usuarioRepository;
 
     private static final int IDADE_MINIMA = 18;
-    private static final Pattern TELEFONE_PATTERN = Pattern
-            .compile("^\\(?[1-9]{2}\\)? ?(?:[2-8]|9[1-9])[0-9]{3}\\-?[0-9]{4}$");
-    private static final Pattern SENHA_PATTERN = Pattern
-            .compile("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d@$!%*?&]{8,}$");
 
     public void validateEmailUniqueness(String email) {
         if (usuarioRepository.findByEmail(email).isPresent()) {
@@ -75,52 +70,16 @@ public class UsuarioValidator {
         }
     }
 
-    public void validateFormatoTelefone(String telefone) {
-        if (telefone == null || telefone.trim().isEmpty()) {
-            throw new CampoInvalidoException("telefone", telefone, "Telefone é obrigatório");
-        }
-
-        if (!TELEFONE_PATTERN.matcher(telefone.trim()).matches()) {
-            throw new CampoInvalidoException("telefone", telefone,
-                    "Telefone deve estar no formato brasileiro válido (ex: (11) 99999-9999)");
-        }
-    }
-
-    public void validateForcaSenha(String senha) {
-        if (senha == null || senha.trim().isEmpty()) {
-            throw new CampoInvalidoException("password", senha, "Senha é obrigatória");
-        }
-
-        if (senha.length() < 8) {
-            throw new CampoInvalidoException("password", "***", "Senha deve ter pelo menos 8 caracteres");
-        }
-
-        if (!SENHA_PATTERN.matcher(senha).matches()) {
-            throw new CampoInvalidoException("password", "***",
-                    "Senha deve conter pelo menos uma letra maiúscula, uma minúscula e um número");
-        }
-    }
-
-    public void validateExists(Long id) {
-        if (!usuarioRepository.existsById(id)) {
-            throw new RegistroNaoEncontradoException("Usuário", "ID", id.toString());
-        }
-    }
-
     public void validateCreate(UsuarioCreateDTO dto) {
         validateEmailUniqueness(dto.getEmail());
         validateCpfUniqueness(dto.getCpf());
         validateIdadeMinima(dto.getNascimento());
-        validateFormatoTelefone(dto.getTelefone());
-        validateForcaSenha(dto.getPassword());
     }
 
     public void validateCreateWithEndereco(UsuarioComEnderecoCreateDTO dto) {
         validateEmailUniqueness(dto.getEmail());
         validateCpfUniqueness(dto.getCpf());
         validateIdadeMinima(dto.getNascimento());
-        validateFormatoTelefone(dto.getTelefone());
-        validateForcaSenha(dto.getPassword());
 
         if (dto.getEndereco() == null) {
             throw new CampoInvalidoException("endereco", "null", "Endereço é obrigatório");
@@ -132,8 +91,12 @@ public class UsuarioValidator {
         validateEmailUniqueness(dto.getEmail(), id);
         validateCpfUniqueness(dto.getCpf(), id);
         validateIdadeMinima(dto.getNascimento());
-        validateFormatoTelefone(dto.getTelefone());
-        validateForcaSenha(dto.getPassword());
+    }
+
+    public void validateExists(Long id) {
+        if (!usuarioRepository.existsById(id)) {
+            throw new RegistroNaoEncontradoException("Usuário", "ID", id.toString());
+        }
     }
 
     public void validateUniqueFields(String email, String cpf) {

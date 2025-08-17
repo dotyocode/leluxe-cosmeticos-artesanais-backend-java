@@ -4,6 +4,8 @@ import java.util.Date;
 
 import org.hibernate.validator.constraints.br.CPF;
 
+import io.com.leluxe_cosmeticos_backend.LeluxeCosmeticosApi.common.annotations.ValidSenha;
+import io.com.leluxe_cosmeticos_backend.LeluxeCosmeticosApi.common.annotations.ValidTelefone;
 import io.com.leluxe_cosmeticos_backend.LeluxeCosmeticosApi.common.enums.roles.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -34,9 +36,7 @@ public class UsuarioCreateDTO {
     @Size(max = 50, message = "Email deve ter no máximo 50 caracteres")
     private String email;
 
-    @NotNull(message = "Senha é obrigatória")
-    @NotBlank(message = "Senha não pode estar vazia")
-    @Size(max = 250, message = "Senha deve ter no máximo 250 caracteres")
+    @ValidSenha
     private String password;
 
     @NotNull(message = "CPF é obrigatório")
@@ -45,9 +45,7 @@ public class UsuarioCreateDTO {
     @Size(max = 11, message = "CPF deve ter no máximo 11 caracteres")
     private String cpf;
 
-    @NotNull(message = "Telefone é obrigatório")
-    @NotBlank(message = "Telefone não pode estar vazio")
-    @Size(max = 250, message = "Telefone deve ter no máximo 250 caracteres")
+    @ValidTelefone
     private String telefone;
 
     @NotNull(message = "Destinatário é obrigatório")

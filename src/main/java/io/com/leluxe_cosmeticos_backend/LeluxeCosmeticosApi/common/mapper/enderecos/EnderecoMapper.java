@@ -7,6 +7,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 import io.com.leluxe_cosmeticos_backend.LeluxeCosmeticosApi.models.dto.enderecos.EnderecoCreateDTO;
+import io.com.leluxe_cosmeticos_backend.LeluxeCosmeticosApi.models.dto.enderecos.EnderecoCreateWithoutUsuarioDTO;
 import io.com.leluxe_cosmeticos_backend.LeluxeCosmeticosApi.models.dto.enderecos.EnderecoDTO;
 import io.com.leluxe_cosmeticos_backend.LeluxeCosmeticosApi.models.dto.enderecos.EnderecoUpdateDTO;
 import io.com.leluxe_cosmeticos_backend.LeluxeCosmeticosApi.models.entities.enderecos.Endereco;
@@ -25,6 +26,12 @@ public interface EnderecoMapper {
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "usuario", ignore = true)
     Endereco toEntity(EnderecoCreateDTO enderecoCreateDTO);
+
+    @Mapping(target = "idEndereco", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "usuario", ignore = true)
+    Endereco toEntity(EnderecoCreateWithoutUsuarioDTO enderecoCreateWithoutUsuarioDTO);
 
     @Mapping(target = "idEndereco", ignore = true)
     @Mapping(target = "createdAt", ignore = true)

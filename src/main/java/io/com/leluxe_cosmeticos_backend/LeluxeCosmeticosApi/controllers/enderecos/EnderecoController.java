@@ -37,9 +37,8 @@ public class EnderecoController {
 
     @GetMapping("/{id}")
     public ResponseEntity<EnderecoDTO> findById(@PathVariable Long id) {
-        return enderecoService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        EnderecoDTO endereco = enderecoService.findByIdOrThrow(id);
+        return ResponseEntity.ok(endereco);
     }
 
     @GetMapping("/usuario/{usuarioId}")
@@ -57,9 +56,8 @@ public class EnderecoController {
     @PutMapping("/{id}")
     public ResponseEntity<EnderecoDTO> update(@PathVariable Long id,
             @Valid @RequestBody EnderecoUpdateDTO enderecoUpdateDTO) {
-        return enderecoService.update(id, enderecoUpdateDTO)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        EnderecoDTO updatedEndereco = enderecoService.updateOrThrow(id, enderecoUpdateDTO);
+        return ResponseEntity.ok(updatedEndereco);
     }
 
     @DeleteMapping("/{id}")
@@ -70,8 +68,7 @@ public class EnderecoController {
 
     @PutMapping("/{id}/principal")
     public ResponseEntity<EnderecoDTO> setPrincipal(@PathVariable Long id) {
-        return enderecoService.setPrincipal(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        EnderecoDTO endereco = enderecoService.setPrincipalOrThrow(id);
+        return ResponseEntity.ok(endereco);
     }
 }
