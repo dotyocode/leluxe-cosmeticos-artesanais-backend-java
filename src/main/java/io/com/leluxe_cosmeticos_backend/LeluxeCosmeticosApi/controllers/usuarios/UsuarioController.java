@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.com.leluxe_cosmeticos_backend.LeluxeCosmeticosApi.common.enums.roles.Role;
 import io.com.leluxe_cosmeticos_backend.LeluxeCosmeticosApi.models.dto.usuarios.UsuarioComEnderecoCreateDTO;
 import io.com.leluxe_cosmeticos_backend.LeluxeCosmeticosApi.models.dto.usuarios.UsuarioCreateDTO;
 import io.com.leluxe_cosmeticos_backend.LeluxeCosmeticosApi.models.dto.usuarios.UsuarioDTO;
@@ -65,23 +64,6 @@ public class UsuarioController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         usuarioService.delete(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/exists/{id}")
-    public ResponseEntity<Boolean> existsById(@PathVariable Long id) {
-        boolean exists = usuarioService.existsById(id);
-        return ResponseEntity.ok(exists);
-    }
-
-    @GetMapping("/exists/email/{email}")
-    public ResponseEntity<Boolean> existsByEmail(@PathVariable String email) {
-        boolean exists = usuarioService.existsByEmail(email);
-        return ResponseEntity.ok(exists);
-    }
-
-    @GetMapping("/roles")
-    public ResponseEntity<Role[]> getRoles() {
-        return ResponseEntity.ok(Role.values());
     }
 
 }
