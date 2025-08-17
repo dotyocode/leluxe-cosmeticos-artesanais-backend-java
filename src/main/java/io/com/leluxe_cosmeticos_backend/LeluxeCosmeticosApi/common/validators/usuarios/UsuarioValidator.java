@@ -53,10 +53,6 @@ public class UsuarioValidator {
     }
 
     public void validateIdadeMinima(Date nascimento) {
-        if (nascimento == null) {
-            throw new CampoInvalidoException("nascimento", "null", "Data de nascimento é obrigatória");
-        }
-
         Calendar dataNascimento = Calendar.getInstance();
         dataNascimento.setTime(nascimento);
 
@@ -80,10 +76,6 @@ public class UsuarioValidator {
         validateEmailUniqueness(dto.getEmail());
         validateCpfUniqueness(dto.getCpf());
         validateIdadeMinima(dto.getNascimento());
-
-        if (dto.getEndereco() == null) {
-            throw new CampoInvalidoException("endereco", "null", "Endereço é obrigatório");
-        }
     }
 
     public void validateUpdate(UsuarioUpdateDTO dto, Long id) {

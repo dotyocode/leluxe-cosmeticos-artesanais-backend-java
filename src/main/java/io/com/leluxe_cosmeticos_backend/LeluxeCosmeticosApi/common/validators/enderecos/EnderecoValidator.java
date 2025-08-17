@@ -38,10 +38,6 @@ public class EnderecoValidator {
     }
 
     public void validateFormatoCep(String cep) {
-        if (cep == null || cep.trim().isEmpty()) {
-            throw new CampoInvalidoException("cep", cep, "CEP é obrigatório");
-        }
-
         String cepLimpo = cep.trim().replace("-", "");
         if (!CEP_PATTERN.matcher(cepLimpo).matches()) {
             throw new CampoInvalidoException("cep", cep,
@@ -50,10 +46,6 @@ public class EnderecoValidator {
     }
 
     public void validateNumero(Integer numero) {
-        if (numero == null) {
-            throw new CampoInvalidoException("numero", "null", "Número é obrigatório");
-        }
-
         if (numero < NUMERO_MINIMO || numero > NUMERO_MAXIMO) {
             throw new CampoInvalidoException("numero", numero.toString(),
                     String.format("Número deve estar entre %d e %d", NUMERO_MINIMO, NUMERO_MAXIMO));
@@ -99,52 +91,12 @@ public class EnderecoValidator {
         validateUsuarioExists(dto.getIdUsuario());
         validateFormatoCep(dto.getCep());
         validateNumero(dto.getNumero());
-
-        if (dto.getEndereco() == null || dto.getEndereco().trim().isEmpty()) {
-            throw new CampoInvalidoException("endereco", dto.getEndereco(), "Endereço é obrigatório");
-        }
-
-        if (dto.getBairro() == null || dto.getBairro().trim().isEmpty()) {
-            throw new CampoInvalidoException("bairro", dto.getBairro(), "Bairro é obrigatório");
-        }
-
-        if (dto.getCidade() == null || dto.getCidade().trim().isEmpty()) {
-            throw new CampoInvalidoException("cidade", dto.getCidade(), "Cidade é obrigatória");
-        }
-
-        if (dto.getEstado() == null || dto.getEstado().trim().isEmpty()) {
-            throw new CampoInvalidoException("estado", dto.getEstado(), "Estado é obrigatório");
-        }
-
-        if (dto.getPais() == null || dto.getPais().trim().isEmpty()) {
-            throw new CampoInvalidoException("pais", dto.getPais(), "País é obrigatório");
-        }
     }
 
     public void validateUpdate(Long id, EnderecoUpdateDTO dto) {
         validateExists(id);
         validateFormatoCep(dto.getCep());
         validateNumero(dto.getNumero());
-
-        if (dto.getEndereco() == null || dto.getEndereco().trim().isEmpty()) {
-            throw new CampoInvalidoException("endereco", dto.getEndereco(), "Endereço é obrigatório");
-        }
-
-        if (dto.getBairro() == null || dto.getBairro().trim().isEmpty()) {
-            throw new CampoInvalidoException("bairro", dto.getBairro(), "Bairro é obrigatório");
-        }
-
-        if (dto.getCidade() == null || dto.getCidade().trim().isEmpty()) {
-            throw new CampoInvalidoException("cidade", dto.getCidade(), "Cidade é obrigatória");
-        }
-
-        if (dto.getEstado() == null || dto.getEstado().trim().isEmpty()) {
-            throw new CampoInvalidoException("estado", dto.getEstado(), "Estado é obrigatório");
-        }
-
-        if (dto.getPais() == null || dto.getPais().trim().isEmpty()) {
-            throw new CampoInvalidoException("pais", dto.getPais(), "País é obrigatório");
-        }
     }
 
     public void validateSetPrincipal(Long id) {
