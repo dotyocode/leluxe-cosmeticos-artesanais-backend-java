@@ -32,6 +32,28 @@ public class GlobalExceptionHandler {
         }
     }
 
+    @Data
+    public static class SuccessResponse<T> {
+        private LocalDateTime timestamp;
+        private int status;
+        private String message;
+        private String path;
+        private T data;
+
+        public SuccessResponse() {
+            this.timestamp = LocalDateTime.now();
+        }
+
+        public static <T> SuccessResponse<T> of(T data, String message, int status, String path) {
+            SuccessResponse<T> response = new SuccessResponse<>();
+            response.setData(data);
+            response.setMessage(message);
+            response.setStatus(status);
+            response.setPath(path);
+            return response;
+        }
+    }
+
     /**
      * Trata exceções de validação (Bean Validation)
      */

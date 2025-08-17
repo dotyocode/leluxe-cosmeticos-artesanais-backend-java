@@ -13,12 +13,16 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import io.com.leluxe_cosmeticos_backend.LeluxeCosmeticosApi.common.exceptions.GlobalExceptionHandler.SuccessResponse;
 import io.com.leluxe_cosmeticos_backend.LeluxeCosmeticosApi.models.dto.usuarios.UsuarioComEnderecoCreateDTO;
 import io.com.leluxe_cosmeticos_backend.LeluxeCosmeticosApi.models.dto.usuarios.UsuarioCreateDTO;
 import io.com.leluxe_cosmeticos_backend.LeluxeCosmeticosApi.models.dto.usuarios.UsuarioDTO;
 import io.com.leluxe_cosmeticos_backend.LeluxeCosmeticosApi.models.dto.usuarios.UsuarioUpdateDTO;
 import io.com.leluxe_cosmeticos_backend.LeluxeCosmeticosApi.services.usuarios.UsuarioService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -43,27 +47,72 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public ResponseEntity<UsuarioDTO> create(@Valid @RequestBody UsuarioCreateDTO usuarioCreateDTO) {
+    public ResponseEntity<SuccessResponse<UsuarioDTO>> create(@Valid @RequestBody UsuarioCreateDTO usuarioCreateDTO) {
         UsuarioDTO createdUsuario = usuarioService.create(usuarioCreateDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdUsuario);
+
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
+                .getRequest();
+        String path = request.getRequestURI();
+
+        SuccessResponse<UsuarioDTO> response = SuccessResponse.of(
+                createdUsuario,
+                "Usuário criado com sucesso",
+                HttpStatus.CREATED.value(),
+                path);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PostMapping("/com-endereco")
-    public ResponseEntity<UsuarioDTO> createWithEndereco(@Valid @RequestBody UsuarioComEnderecoCreateDTO dto) {
+    public ResponseEntity<SuccessResponse<UsuarioDTO>> createWithEndereco(
+            @Valid @RequestBody UsuarioComEnderecoCreateDTO dto) {
         UsuarioDTO createdUsuario = usuarioService.createWithEndereco(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdUsuario);
+
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
+                .getRequest();
+        String path = request.getRequestURI();
+
+        SuccessResponse<UsuarioDTO> response = SuccessResponse.of(
+                createdUsuario,
+                "Usuário criado com endereço com sucesso",
+                HttpStatus.CREATED.value(),
+                path);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UsuarioDTO> update(@PathVariable Long id, @Valid @RequestBody UsuarioUpdateDTO dto) {
+    public ResponseEntity<SuccessResponse<UsuarioDTO>> update(@PathVariable Long id,
+            @Valid @RequestBody UsuarioUpdateDTO dto) {
         UsuarioDTO updatedUsuario = usuarioService.update(id, dto);
-        return ResponseEntity.ok(updatedUsuario);
+
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
+                .getRequest();
+        String path = request.getRequestURI();
+
+        SuccessResponse<UsuarioDTO> response = SuccessResponse.of(
+                updatedUsuario,
+                "Usuário atualizado com sucesso",
+                HttpStatus.OK.value(),
+                path);
+
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<SuccessResponse<Void>> delete(@PathVariable Long id) {
         usuarioService.delete(id);
-        return ResponseEntity.noContent().build();
-    }
 
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
+                .getRequest();
+        String path = request.getRequestURI();
+
+        SuccessResponse<Void> response = SuccessResponse.of(
+                null,
+                "Usuário excluído com sucesso",
+                HttpStatus.OK.value(),
+                path);
+
+        return ResponseEntity.ok(response);
+    }
 }

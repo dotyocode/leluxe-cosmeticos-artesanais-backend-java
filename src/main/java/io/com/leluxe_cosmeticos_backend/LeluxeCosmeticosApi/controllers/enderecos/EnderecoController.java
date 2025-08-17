@@ -13,11 +13,15 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import io.com.leluxe_cosmeticos_backend.LeluxeCosmeticosApi.common.exceptions.GlobalExceptionHandler.SuccessResponse;
 import io.com.leluxe_cosmeticos_backend.LeluxeCosmeticosApi.models.dto.enderecos.EnderecoCreateDTO;
 import io.com.leluxe_cosmeticos_backend.LeluxeCosmeticosApi.models.dto.enderecos.EnderecoDTO;
 import io.com.leluxe_cosmeticos_backend.LeluxeCosmeticosApi.models.dto.enderecos.EnderecoUpdateDTO;
 import io.com.leluxe_cosmeticos_backend.LeluxeCosmeticosApi.services.enderecos.EnderecoService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -48,27 +52,72 @@ public class EnderecoController {
     }
 
     @PostMapping
-    public ResponseEntity<EnderecoDTO> create(@Valid @RequestBody EnderecoCreateDTO enderecoCreateDTO) {
+    public ResponseEntity<SuccessResponse<EnderecoDTO>> create(
+            @Valid @RequestBody EnderecoCreateDTO enderecoCreateDTO) {
         EnderecoDTO createdEndereco = enderecoService.create(enderecoCreateDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdEndereco);
+
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
+                .getRequest();
+        String path = request.getRequestURI();
+
+        SuccessResponse<EnderecoDTO> response = SuccessResponse.of(
+                createdEndereco,
+                "Endereço criado com sucesso",
+                HttpStatus.CREATED.value(),
+                path);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EnderecoDTO> update(@PathVariable Long id,
+    public ResponseEntity<SuccessResponse<EnderecoDTO>> update(@PathVariable Long id,
             @Valid @RequestBody EnderecoUpdateDTO enderecoUpdateDTO) {
         EnderecoDTO updatedEndereco = enderecoService.updateOrThrow(id, enderecoUpdateDTO);
-        return ResponseEntity.ok(updatedEndereco);
+
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
+                .getRequest();
+        String path = request.getRequestURI();
+
+        SuccessResponse<EnderecoDTO> response = SuccessResponse.of(
+                updatedEndereco,
+                "Endereço atualizado com sucesso",
+                HttpStatus.OK.value(),
+                path);
+
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<SuccessResponse<Void>> delete(@PathVariable Long id) {
         enderecoService.delete(id);
-        return ResponseEntity.noContent().build();
+
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
+                .getRequest();
+        String path = request.getRequestURI();
+
+        SuccessResponse<Void> response = SuccessResponse.of(
+                null,
+                "Endereço excluído com sucesso",
+                HttpStatus.OK.value(),
+                path);
+
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}/principal")
-    public ResponseEntity<EnderecoDTO> setPrincipal(@PathVariable Long id) {
+    public ResponseEntity<SuccessResponse<EnderecoDTO>> setPrincipal(@PathVariable Long id) {
         EnderecoDTO endereco = enderecoService.setPrincipalOrThrow(id);
-        return ResponseEntity.ok(endereco);
+
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
+                .getRequest();
+        String path = request.getRequestURI();
+
+        SuccessResponse<EnderecoDTO> response = SuccessResponse.of(
+                endereco,
+                "Endereço definido como principal com sucesso",
+                HttpStatus.OK.value(),
+                path);
+
+        return ResponseEntity.ok(response);
     }
 }
